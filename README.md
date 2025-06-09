@@ -1,21 +1,21 @@
-# GuÃ­a Avanzada y Completa de Pentesting en Active Directory (AD)
+# Guía Avanzada y Completa de Pentesting en Active Directory (AD)
 
-Esta guÃ­a estÃ¡ dirigida a pentesters y red teamers con conocimientos intermedios y avanzados. Cubre tÃ©cnicas y procedimientos para acceso inicial, enumeraciÃ³n, explotaciÃ³n, escalada de privilegios, persistencia y movimiento lateral en entornos Active Directory. Se incluyen recursos tÃ©cnicos, repositorios, writeups, laboratorios, defensas y escenarios reales de ataque.
+Esta guía está dirigida a pentesters y red teamers con conocimientos intermedios y avanzados. Cubre técnicas y procedimientos para acceso inicial, enumeración, explotación, escalada de privilegios, persistencia, movimiento lateral y defensa en entornos de Active Directory.
 
 ---
 
-## Ãndice
+## Índice
 
 1. [Recursos Principales y Cheatsheets](#recursos)
 2. [Acceso Inicial (Breaching)](#acceso-inicial)
-3. [EnumeraciÃ³n en AD](#enumeracion)
+3. [Enumeración en AD](#enumeracion)
 4. [Persistence y Movimiento Lateral](#persistencia)
 5. [Privilege Escalation (Privesc)](#privesc)
-6. [Defensa, DetecciÃ³n y EvasiÃ³n](#defensa)
+6. [Defensa, Detección y Evasión](#defensa)
 7. [Herramientas Imprescindibles y Alternativas](#herramientas)
 8. [Writeups, Laboratorios y Repositorios Recomendados](#writeups)
-9. [MÃ¡ximas Brechas y Privesc MÃ¡s Populares](#maximas)
-10. [Referencias, FormaciÃ³n y Comunidad](#referencias)
+9. [Máximas Brechas y Privesc Más Populares](#maximas)
+10. [Referencias, Formación y Comunidad](#referencias)
 
 ---
 
@@ -85,9 +85,9 @@ ntlmrelayx.py -tf targets.txt -smb2support
 ---
 
 <a name="enumeracion"></a>
-## 3. EnumeraciÃ³n en AD
+## 3. Enumeración en AD
 
-### EnumeraciÃ³n AnÃ³nima y con Credenciales
+### Enumeración Anónima y con Credenciales
 
 #### Sin credenciales:
 - `rpcclient -U "" <DC-IP>`
@@ -104,13 +104,13 @@ ntlmrelayx.py -tf targets.txt -smb2support
 - [PingCastle](https://github.com/vletoux/pingcastle)
 - [NetExec](https://github.com/Pennyw0rth/NetExec) (fork de CME)
 
-#### EnumeraciÃ³n de Shares SMB:
+#### Enumeración de Shares SMB:
 ```bash
 smbclient -L //<DC-IP> -N
-crackmapexec smb <target> --shares -u usuario -p contraseÃ±a
+crackmapexec smb <target> --shares -u usuario -p contraseña
 ```
 
-#### EnumeraciÃ³n LDAP:
+#### Enumeración LDAP:
 ```bash
 ldapsearch -x -h <DC-IP> -b "dc=domain,dc=local"
 ```
@@ -121,14 +121,14 @@ SharpHound.exe -c all
 Invoke-BloodHound -CollectionMethod All
 ```
 
-#### EnumeraciÃ³n de GPOs:
+#### Enumeración de GPOs:
 ```powershell
 Get-GPO -All
 ```
 
-#### EnumeraciÃ³n de Certificados (AD CS):
+#### Enumeración de Certificados (AD CS):
 ```bash
-certipy find -u usuario -p 'contraseÃ±a' -target <DC-IP> -dc-ip <DC-IP> -d dominio.local
+certipy find -u usuario -p 'contraseña' -target <DC-IP> -dc-ip <DC-IP> -d dominio.local
 ```
 
 ---
@@ -136,14 +136,14 @@ certipy find -u usuario -p 'contraseÃ±a' -target <DC-IP> -dc-ip <DC-IP> -d dom
 <a name="persistencia"></a>
 ## 4. Persistence y Movimiento Lateral
 
-### TÃ©cnicas de Persistencia
+### Técnicas de Persistencia
 - **Golden Ticket y Silver Ticket** (Mimikatz)
 - **Pass-the-Hash / Pass-the-Ticket** (Impacket, Mimikatz, CrackMapExec)
 - **Overpass-the-Hash (Pass-the-Key)**
 - **DC Sync / DC Shadow**
 - **Abuso de AdminSDHolder**
 - **Backdoors en GPOs**
-- **Abuso de delegaciÃ³n de servicios (RBCD, S4U2Self, S4U2Proxy)**
+- **Abuso de delegación de servicios (RBCD, S4U2Self, S4U2Proxy)**
 - **Shadow Credentials y certificados mal configurados**
 - **Persistencia en Scheduled Tasks, Service Accounts, WMI y Run Keys**
 
@@ -179,7 +179,7 @@ mimikatz # lsadump::dcsync /domain:dominio.local /user:krbtgt
 <a name="privesc"></a>
 ## 5. Privilege Escalation (Privesc)
 
-### TÃ©cnicas de Escalada
+### Técnicas de Escalada
 
 - **Kerberoasting / AS-REP Roasting**
 - **Abuso de Delegaciones (Unconstrained, Constrained, RBCD)**
@@ -223,16 +223,16 @@ Get-ADComputer -Filter * -Property ms-Mcs-AdmPwd | Select-Object Name,ms-Mcs-Adm
 
 #### Ejemplo: Abuso de Certificados
 ```bash
-certipy auth -u usuario -p contraseÃ±a -dc-ip <DC-IP> -d dominio.local
-certipy find -u usuario -p contraseÃ±a -target <DC-IP> -dc-ip <DC-IP>
+certipy auth -u usuario -p contraseña -dc-ip <DC-IP> -d dominio.local
+certipy find -u usuario -p contraseña -target <DC-IP> -dc-ip <DC-IP>
 ```
 
 ---
 
 <a name="defensa"></a>
-## 6. Defensa, DetecciÃ³n y EvasiÃ³n
+## 6. Defensa, Detección y Evasión
 
-### Â¿CÃ³mo defender y detectar?
+### ¿Cómo defender y detectar?
 - **Monitorizar logs de Kerberos, NTLM, WinRM, RDP, DCOM, WMI**
 - **Activar y auditar eventos de seguridad 4624, 4625, 4672, 4688, 4768, 4769, 4776, 4720, 4726, 4732, 4738, 4740, 4756, 4767, 4782, 7045**
 - **Habilitar LAPS y restringir la lectura del atributo ms-Mcs-AdmPwd**
@@ -244,11 +244,11 @@ certipy find -u usuario -p contraseÃ±a -target <DC-IP> -dc-ip <DC-IP>
 - **Aplicar parches de seguridad de manera continua**
 - **Usar honeypots y cuentas trampa para detectar movimiento lateral**
 
-### EvasiÃ³n de Defensas
-- **ObfuscaciÃ³n de scripts (Invoke-Obfuscation, PSObfuscation)**
+### Evasión de Defensas
+- **Ofuscación de scripts (Invoke-Obfuscation, PSObfuscation)**
 - **Bypass de AMSI (Antimalware Scan Interface)**
 - **Uso de binarios living-off-the-land (LOLBAS)**
-- **TÃ©cnicas de inyecciÃ³n de memoria y ejecuciÃ³n reflectiva**
+- **Técnicas de inyección de memoria y ejecución reflectiva**
 - **Uso de Cobalt Strike, Sliver, Covenant, Mythic y otros C2s**
 
 ---
@@ -266,17 +266,17 @@ certipy find -u usuario -p contraseÃ±a -target <DC-IP> -dc-ip <DC-IP>
 - **Evil-WinRM**
 - **Responder**
 - **Certipy** (AD CS Attacks)
-- **PingCastle** (Health y auditorÃ­a de AD)
+- **PingCastle** (Health y auditoría de AD)
 - **Kerbrute** (fuerza bruta Kerberos)
 - **ADRecon, ADExplorer, ADACLScanner**
 - **SharpCradle, SharpDPAPI, SharpSCCM, SharpPrinter**
 - **Sliver, Covenant, Mythic, Cobalt Strike, Brute Ratel**
 
 #### Alternativas Open Source y Blue Team
-- [Sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon) (detecciÃ³n)
+- [Sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon) (detección)
 - [KAPE](https://www.kroll.com/en/services/cyber-risk/incident-response-litigation-support/kroll-artifact-parser-extractor-kape)
-- [Sigma](https://github.com/SigmaHQ/sigma) (detecciÃ³n SIEM)
-- [Zeek](https://zeek.org/) (detecciÃ³n en red)
+- [Sigma](https://github.com/SigmaHQ/sigma) (detección SIEM)
+- [Zeek](https://zeek.org/) (detección en red)
 
 ---
 
@@ -293,7 +293,7 @@ certipy find -u usuario -p contraseÃ±a -target <DC-IP> -dc-ip <DC-IP>
 - [TryHackMe Rooms](https://tryhackme.com/room/attacktivedirectory)
 - [PentesterLab Windows/AD](https://pentesterlab.com/exercises/windows_intro/course)
 
-### MÃ¡quinas y retos con privesc AD:
+### Máquinas y retos con privesc AD:
 
 - **HTB - Forest**: Privesc con DCSync y Bloodhound
 - **HTB - Sauna**: Kerberoasting
@@ -306,10 +306,10 @@ certipy find -u usuario -p contraseÃ±a -target <DC-IP> -dc-ip <DC-IP>
 ---
 
 <a name="maximas"></a>
-## 9. MÃ¡ximas Brechas y Privesc MÃ¡s Populares
+## 9. Máximas Brechas y Privesc Más Populares
 
-- **GPP Passwords**: RecuperaciÃ³n de cpassword en SYSVOL.
-- **Kerberoasting**: Cuentas de servicio con SPN y contraseÃ±as dÃ©biles.
+- **GPP Passwords**: Recuperación de cpassword en SYSVOL.
+- **Kerberoasting**: Cuentas de servicio con SPN y contraseñas débiles.
 - **AS-REP Roasting**: Usuarios sin preauth.
 - **Abuso de ACLs**: BloodHound identifica rutas de privesc ocultas.
 - **LAPS**: Extraer passwords locales de AD (ms-Mcs-AdmPwd).
@@ -318,12 +318,12 @@ certipy find -u usuario -p contraseÃ±a -target <DC-IP> -dc-ip <DC-IP>
 - **Escalada local**: SeDebugPrivilege, Service misconfig, Unquoted Service Path, AlwaysInstallElevated, DLL Hijacking, Print Spooler, UAC Bypass.
 - **PrintNightmare, ZeroLogon, PetitPotam, DFSCoerce**
 - **Persistence en GPOs, Scheduled Tasks, WMI, Run Keys, Service Accounts**
-- **TÃ©cnicas de Pass-the-Hash y Pass-the-Ticket**
+- **Técnicas de Pass-the-Hash y Pass-the-Ticket**
 
 ---
 
 <a name="referencias"></a>
-## 10. Referencias, FormaciÃ³n y Comunidad
+## 10. Referencias, Formación y Comunidad
 
 - [Hacking The Windows Active Directory (HackTricks YT)](https://www.youtube.com/c/HackTricks)
 - [Red Team Notes](https://www.ired.team/)
@@ -341,22 +341,22 @@ certipy find -u usuario -p contraseÃ±a -target <DC-IP> -dc-ip <DC-IP>
 
 ---
 
-## Â¡Mantente Actualizado!
-- Sigue los repos y canales listados para estar siempre al dÃ­a con nuevas tÃ©cnicas y vulnerabilidades en AD.
+## ¡Mantente Actualizado!
+- Sigue los repos y canales listados para estar siempre al día con nuevas técnicas y vulnerabilidades en AD.
 - Participa en conferencias como DEFCON, Black Hat, RootedCON, Ekoparty, Bsides, etc.
 - Contribuye a foros como Reddit r/netsec, r/AskNetsec, Stack Exchange Security, Discord y Telegram de comunidades de seguridad.
 
 ---
 
-## Notas Finales y Buenas PrÃ¡cticas
+## Notas Finales y Buenas Prácticas
 
 - **Practica en entornos seguros y legales.** Usa laboratorios como HackTheBox, TryHackMe, VulnHub, Azure AD Labs, DetectionLab.
-- **Combina fuentes de informaciÃ³n**: DocumentaciÃ³n oficial, blogs tÃ©cnicos, writeups, cursos, videos, podcasts.
+- **Combina fuentes de información**: Documentación oficial, blogs técnicos, writeups, cursos, videos, podcasts.
 - **Comparte conocimientos y mantente humilde:** La seguridad en AD evoluciona constantemente.
 - **Automatiza y desarrolla tus propios scripts.** Aporta a la comunidad.
 
 ---
 
-**ActualizaciÃ³n:**  
-GuÃ­a revisada y ampliada a junio 2025.  
-Â¿Sugerencias? Â¡Colabora y comparte!
+**Actualización:**  
+Guía revisada y ampliada a junio 2025.  
+¿Sugerencias? ¡Colabora y comparte!
